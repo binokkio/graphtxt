@@ -1,6 +1,7 @@
 package b.nana.technology.graphtxt;
 
 import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 public class GraphTxt {
@@ -16,6 +17,15 @@ public class GraphTxt {
                 LinkedHashMap::new));
     }
 
+    private Integer getNodeIndex(Node node) {
+        int index = 0;
+        for (Node test : nodes.values()) {
+            if (test == node) return index;
+            else index++;
+        }
+        throw new IllegalStateException("Node not found");
+    }
+
     public String getText() {
 
         Set<Node> roots = getRoots();
@@ -29,8 +39,10 @@ public class GraphTxt {
                 rows.computeIfAbsent(row, x -> new ArrayList<>()).add(node));
 
         // optimize order of nodes within rows
+        Comparator<Map.Entry<Score, Node>> comparator = Map.Entry.comparingByKey();
+        comparator = comparator.thenComparing(e -> getNodeIndex(e.getValue()));
         for (int i = 1; i < rows.size(); i++) {
-            Map<Double, Node> nodeOrder = new HashMap<>();
+            Map<Score, Node> nodeOrder = new HashMap<>();
             for (Node node : rows.get(i)) {
                 int weight = 0;
                 double score = 0;
@@ -42,45 +54,49 @@ public class GraphTxt {
                         }
                     }
                 }
-                nodeOrder.put(score, node);
+                nodeOrder.put(new Score(score), node);
             }
-            rows.put(i, nodeOrder.entrySet().stream().sorted(Map.Entry.comparingByKey()).map(Map.Entry::getValue).collect(Collectors.toList()));
+            rows.put(i, nodeOrder.entrySet().stream().sorted(comparator).map(Map.Entry::getValue).collect(Collectors.toList()));
         }
 
 
 
 
         // experimental rendering
-        char[][][] canvas = new char[40][80][4];
+        AtomicInteger rowOffset = new AtomicInteger();
+        Map<Integer, List<NodeTxt>> nodeTxtsByRow = new HashMap<>();
+        Map<String, NodeTxt> nodeTxtsById = new HashMap<>();
         rows.forEach((row, nodes) -> {
             int columnOffset = 0;
             for (Node node : nodes) {
                 NodeTxt nodeTxt = new NodeTxt(node);
-                nodeTxt.render(canvas, row * 4, columnOffset);
+                nodeTxtsByRow.computeIfAbsent(row, x -> new ArrayList<>()).add(nodeTxt);
+                nodeTxtsById.put(node.getId(), nodeTxt);
+                nodeTxt.setPosition(columnOffset, rowOffset.get());
                 columnOffset += nodeTxt.getWidth() + 1;
+            }
+            rowOffset.addAndGet(5 + (int) nodes.stream().filter(n -> !n.getEdges().isEmpty()).count());
+        });
+
+        // TODO calculate canvas size
+        Canvas canvas = new Canvas(40, 100);
+
+        nodeTxtsByRow.forEach((row, nodeTxts) -> {
+            int foo = 1;
+            for (NodeTxt nodeTxt : nodeTxts) {
+                if (!nodeTxt.getNode().getEdges().isEmpty()) {
+                    for (Edge edge : nodeTxt.getNode().getEdges()) {
+                        nodeTxt.renderEdge(canvas, foo, nodeTxtsById.get(edge.getTo()));
+                    }
+                    foo++;
+                }
             }
         });
 
-        StringBuilder text = new StringBuilder();
-        for (int y = 0; y < canvas.length; y++) {
-            char[][] row = canvas[y];
-            for (int x = 0; x < row.length; x++) {
-                char[] pixel = row[x];
-                if (pixel[0] != 0) {
-                    for (int i = 0; i < pixel.length; i++) {
-                        if (pixel[i] != 0) {
-                            text.append(pixel[i]);
-                        }
-                    }
-                } else {
-                    text.append(' ');
-                }
-            }
-            text.append('\n');
-        }
 
+        nodeTxtsByRow.values().stream().flatMap(Collection::stream).forEach(nt -> nt.renderNode(canvas));
 
-        System.out.println(text);
+        System.out.println(canvas.getText());
 
         return null;
     }
