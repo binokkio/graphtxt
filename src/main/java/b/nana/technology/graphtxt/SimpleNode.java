@@ -9,6 +9,10 @@ public class SimpleNode implements Node {
         return new SimpleNode(id, Arrays.stream(edges).map(SimpleEdge::new).toArray(SimpleEdge[]::new));
     }
 
+    public static SimpleNode of(String id, List<String> edges) {
+        return new SimpleNode(id, edges.stream().map(SimpleEdge::new).toArray(SimpleEdge[]::new));
+    }
+
     private final String id;
     private final List<Edge> edges;
 

@@ -2,15 +2,44 @@ package b.nana.technology.graphtxt;
 
 public class NodeTxt {
 
-    private static final char BOTTOM_LEFT_CORNER = '└';
-    private static final char BOTTOM_RIGHT_CORNER = '┘';
-    private static final char CROSS = '┼';
-    private static final char HORIZONTAL_LINE = '─';
-    private static final char HORIZONTAL_LINE_WITH_INCOMING_EDGE = '┴';
-    private static final char HORIZONTAL_LINE_WITH_OUTGOING_EDGE = '┬';
-    private static final char TOP_LEFT_CORNER = '┌';
-    private static final char TOP_RIGHT_CORNER = '┐';
-    private static final char VERTICAL_LINE = '│';
+    private static final char[] EDGE_SEGMENTS = new char[] {
+            // URDL (up, right, down, left)
+            ' ',  // 0000
+            ' ',  // 0001
+            ' ',  // 0010
+            '┐',  // 0011
+            ' ',  // 0100
+            '─',  // 0101
+            '┌',  // 0110
+            '┬',  // 0111
+            ' ',  // 1000
+            '┘',  // 1001
+            '│',  // 1010
+            '┤',  // 1011
+            '└',  // 1100
+            '┴',  // 1101
+            '├',  // 1110
+            '┼',  // 1111
+    };
+
+    private static final int DOWN_LEFT_MASK = 0b0011;
+    private static final int RIGHT_DOWN_LEFT_MASK = 0b0111;
+    private static final int RIGHT_DOWN_MASK = 0b0110;
+    private static final int RIGHT_LEFT_MASK = 0b0101;
+    private static final int UP_DOWN_MASK = 0b1010;
+    private static final int UP_LEFT_MASK = 0b1001;
+    private static final int UP_RIGHT_LEFT_MASK = 0b1101;
+    private static final int UP_RIGHT_MASK = 0b1100;
+
+    private static final char DOWN_LEFT = EDGE_SEGMENTS[DOWN_LEFT_MASK];
+    private static final char RIGHT_DOWN = EDGE_SEGMENTS[RIGHT_DOWN_MASK];
+    private static final char RIGHT_DOWN_LEFT = EDGE_SEGMENTS[RIGHT_DOWN_LEFT_MASK];
+    private static final char RIGHT_LEFT = EDGE_SEGMENTS[RIGHT_LEFT_MASK];
+    private static final char UP_DOWN = EDGE_SEGMENTS[UP_DOWN_MASK];
+    private static final char UP_LEFT = EDGE_SEGMENTS[UP_LEFT_MASK];
+    private static final char UP_RIGHT = EDGE_SEGMENTS[UP_RIGHT_MASK];
+    private static final char UP_RIGHT_LEFT = EDGE_SEGMENTS[UP_RIGHT_LEFT_MASK];
+
 
     private final Node node;
 
@@ -43,23 +72,23 @@ public class NodeTxt {
     }
 
     public void renderNode(Canvas canvas) {
-        canvas.getPixel(x, y).setContent(TOP_LEFT_CORNER);
-        canvas.getPixel(x + getWidth() - 1, y).setContent(TOP_RIGHT_CORNER);
-        canvas.getPixel(x, y + 1).setContent(VERTICAL_LINE);
-        canvas.getPixel(x + getWidth() - 1, y + 1).setContent(VERTICAL_LINE);
-        canvas.getPixel(x, y + 2).setContent(BOTTOM_LEFT_CORNER);
-        canvas.getPixel(x + getWidth() - 1, y + 2).setContent(BOTTOM_RIGHT_CORNER);
+        canvas.getPixel(x, y).setContent(RIGHT_DOWN);
+        canvas.getPixel(x + getWidth() - 1, y).setContent(DOWN_LEFT);
+        canvas.getPixel(x, y + 1).setContent(UP_DOWN);
+        canvas.getPixel(x + getWidth() - 1, y + 1).setContent(UP_DOWN);
+        canvas.getPixel(x, y + 2).setContent(UP_RIGHT);
+        canvas.getPixel(x + getWidth() - 1, y + 2).setContent(UP_LEFT);
         for (int i = 1; i < getWidth() - 1; i++) {
-            canvas.getPixel(x + i, y).setContent(HORIZONTAL_LINE);
+            canvas.getPixel(x + i, y).setContent(RIGHT_LEFT);
             if (i == getWidth() / 2 && y != 0) {
-                canvas.getPixel(x + i, y).setContent(HORIZONTAL_LINE_WITH_INCOMING_EDGE);
+                canvas.getPixel(x + i, y).setContent(UP_RIGHT_LEFT);
             } else {
-                canvas.getPixel(x + i, y).setContent(HORIZONTAL_LINE);
+                canvas.getPixel(x + i, y).setContent(RIGHT_LEFT);
             }
             if (i == getWidth() / 2 && !node.getEdges().isEmpty()) {
-                canvas.getPixel(x + i, y + 2).setContent(HORIZONTAL_LINE_WITH_OUTGOING_EDGE);
+                canvas.getPixel(x + i, y + 2).setContent(RIGHT_DOWN_LEFT);
             } else {
-                canvas.getPixel(x + i, y + 2).setContent(HORIZONTAL_LINE);
+                canvas.getPixel(x + i, y + 2).setContent(RIGHT_LEFT);
             }
         }
 
@@ -72,23 +101,35 @@ public class NodeTxt {
         int x = this.x + (getWidth() / 2);
         int y = this.y + 3;
 
-        for (int i = 0; i < coast; i++) {
-            canvas.getPixel(x, y++).setContent(VERTICAL_LINE);
-        }
+        for (int i = 0; i < coast; i++)
+            addEdgeSegment(canvas.getPixel(x, y++), UP_DOWN_MASK);
 
         if (x > nodeTxt.x + nodeTxt.getWidth() / 2) {
-            canvas.getPixel(x, y).setContent(BOTTOM_RIGHT_CORNER);
+            addEdgeSegment(canvas.getPixel(x, y), UP_LEFT_MASK);
             while (x > nodeTxt.x + nodeTxt.getWidth() / 2 + 1)
-                canvas.getPixel(--x, y).setContent(HORIZONTAL_LINE);
-            canvas.getPixel(--x, y).setContent(TOP_LEFT_CORNER);
+                addEdgeSegment(canvas.getPixel(--x, y), RIGHT_LEFT_MASK);
+            addEdgeSegment(canvas.getPixel(--x, y), RIGHT_DOWN_MASK);
         } else if (x < nodeTxt.x + nodeTxt.getWidth() / 2) {
-            canvas.getPixel(x, y).setContent(BOTTOM_LEFT_CORNER);
+            addEdgeSegment(canvas.getPixel(x, y), UP_RIGHT_MASK);
             while (x < nodeTxt.x + nodeTxt.getWidth() / 2 - 1)
-                canvas.getPixel(++x, y).setContent(HORIZONTAL_LINE);
-            canvas.getPixel(++x, y).setContent(TOP_RIGHT_CORNER);
+                addEdgeSegment(canvas.getPixel(++x, y), RIGHT_LEFT_MASK);
+            addEdgeSegment(canvas.getPixel(++x, y), DOWN_LEFT_MASK);
+        } else {
+            addEdgeSegment(canvas.getPixel(x, y), UP_DOWN_MASK);
         }
 
         while (y < nodeTxt.y)
-            canvas.getPixel(x, ++y).setContent(VERTICAL_LINE);
+            addEdgeSegment(canvas.getPixel(x, ++y), UP_DOWN_MASK);
+    }
+
+    private void addEdgeSegment(Pixel pixel, int edgeSegmentMask) {
+        pixel.setContent(EDGE_SEGMENTS[getEdgeSegmentMask(pixel.getContent()) | edgeSegmentMask]);
+    }
+
+    private int getEdgeSegmentMask(char c) {
+        for (int i = 0; i < EDGE_SEGMENTS.length; i++)
+            if (EDGE_SEGMENTS[i] == c)
+                return i;
+        return 0;
     }
 }

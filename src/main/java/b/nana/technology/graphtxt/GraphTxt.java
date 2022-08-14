@@ -59,9 +59,6 @@ public class GraphTxt {
             rows.put(i, nodeOrder.entrySet().stream().sorted(comparator).map(Map.Entry::getValue).collect(Collectors.toList()));
         }
 
-
-
-
         // experimental rendering
         AtomicInteger rowOffset = new AtomicInteger();
         Map<Integer, List<NodeTxt>> nodeTxtsByRow = new HashMap<>();
@@ -78,27 +75,33 @@ public class GraphTxt {
             rowOffset.addAndGet(5 + (int) nodes.stream().filter(n -> !n.getEdges().isEmpty()).count());
         });
 
-        // TODO calculate canvas size
-        Canvas canvas = new Canvas(40, 100);
+        // calculate canvas size
+        int width = nodeTxtsById.values().stream()
+                .mapToInt(node -> node.getX() + node.getWidth())
+                .max()
+                .orElseThrow();
+
+        int height = nodeTxtsById.values().stream()
+                .mapToInt(node -> node.getY() + 3)
+                .max()
+                .orElseThrow();
+
+        Canvas canvas = new Canvas(width, height);
 
         nodeTxtsByRow.forEach((row, nodeTxts) -> {
-            int foo = 1;
+            int coast = 1;
             for (NodeTxt nodeTxt : nodeTxts) {
                 if (!nodeTxt.getNode().getEdges().isEmpty()) {
-                    for (Edge edge : nodeTxt.getNode().getEdges()) {
-                        nodeTxt.renderEdge(canvas, foo, nodeTxtsById.get(edge.getTo()));
-                    }
-                    foo++;
+                    for (Edge edge : nodeTxt.getNode().getEdges())
+                        nodeTxt.renderEdge(canvas, coast, nodeTxtsById.get(edge.getTo()));
+                    coast++;
                 }
             }
         });
 
-
         nodeTxtsByRow.values().stream().flatMap(Collection::stream).forEach(nt -> nt.renderNode(canvas));
 
-        System.out.println(canvas.getText());
-
-        return null;
+        return canvas.getText();
     }
 
     private Set<Node> getRoots() {

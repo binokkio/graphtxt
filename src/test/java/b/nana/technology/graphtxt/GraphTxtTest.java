@@ -7,8 +7,18 @@ import java.util.List;
 class GraphTxtTest {
 
     @Test
+    void testAB() {
+        System.out.println(new GraphTxt(
+                List.of(
+                        SimpleNode.of("A", "B"),
+                        SimpleNode.of("B")
+                )
+        ).getText());
+    }
+
+    @Test
     void testTwoRootsIntertwined() {
-        new GraphTxt(
+        System.out.println(new GraphTxt(
                 List.of(
                         SimpleNode.of("Alpha", "Booo", "C", "F"),
                         SimpleNode.of("Booo", "F"),
@@ -19,6 +29,6 @@ class GraphTxtTest {
                         SimpleNode.of("ZZZ"),
                         SimpleNode.of("H")
                 )
-        ).getText();
+        ).getText());
     }
 }
