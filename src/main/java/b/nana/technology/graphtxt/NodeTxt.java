@@ -79,17 +79,10 @@ public class NodeTxt {
         canvas.getPixel(x, y + 2).setContent(UP_RIGHT);
         canvas.getPixel(x + getWidth() - 1, y + 2).setContent(UP_LEFT);
         for (int i = 1; i < getWidth() - 1; i++) {
-            canvas.getPixel(x + i, y).setContent(RIGHT_LEFT);
-            if (i == getWidth() / 2 && y != 0) {
-                canvas.getPixel(x + i, y).setContent(UP_RIGHT_LEFT);
-            } else {
-                canvas.getPixel(x + i, y).setContent(RIGHT_LEFT);
-            }
-            if (i == getWidth() / 2 && !node.getEdges().isEmpty()) {
-                canvas.getPixel(x + i, y + 2).setContent(RIGHT_DOWN_LEFT);
-            } else {
-                canvas.getPixel(x + i, y + 2).setContent(RIGHT_LEFT);
-            }
+            canvas.getPixel(x + i, y).setContent(i == getWidth() / 2 && y != 0 ?
+                    UP_RIGHT_LEFT : RIGHT_LEFT);
+            canvas.getPixel(x + i, y + 2).setContent(i == getWidth() / 2 && !node.getEdges().isEmpty() ?
+                    RIGHT_DOWN_LEFT : RIGHT_LEFT);
         }
 
         for (int i = 0; i < node.getId().length(); i++) {
