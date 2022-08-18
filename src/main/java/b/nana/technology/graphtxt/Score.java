@@ -2,10 +2,11 @@ package b.nana.technology.graphtxt;
 
 public class Score implements Comparable<Score> {
 
-    private final double score;
+    private double score;
+    private int weight;
 
-    public Score(double score) {
-        this.score = score;
+    public void update(double value) {
+        score = (score * weight + value) / ++weight;
     }
 
     @Override

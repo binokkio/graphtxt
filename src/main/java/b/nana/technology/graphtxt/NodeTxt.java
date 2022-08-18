@@ -41,25 +41,45 @@ public class NodeTxt {
     private static final char UP_RIGHT_LEFT = EDGE_SEGMENTS[UP_RIGHT_LEFT_MASK];
 
 
+    private final GraphTxt graphTxt;
     private final Node node;
+    private final Edges edges;
 
     private int x;
     private int y;
 
-    public NodeTxt(Node node) {
+    public NodeTxt(GraphTxt graphTxt, Node node) {
+        this.graphTxt = graphTxt;
         this.node = node;
+        this.edges = new Edges(node.getEdges());
     }
 
     public Node getNode() {
         return node;
     }
 
-    public int getWidth() {
-        return node.getId().length() + 4;
+    public Edges getEdges() {
+        return edges;
+    }
+
+    public boolean hasEdges() {
+        return !edges.isEmpty();
+    }
+
+    public boolean linksTo(NodeTxt root) {
+        return edges.linksTo(root);
     }
 
     public void setPosition(int x, int y) {
         this.x = x;
+        this.y = y;
+    }
+
+    public void setX(int x) {
+        this.x = x;
+    }
+
+    public void setY(int y) {
         this.y = y;
     }
 
@@ -69,6 +89,10 @@ public class NodeTxt {
 
     public int getY() {
         return y;
+    }
+
+    public int getWidth() {
+        return node.toString().length() + 4;
     }
 
     public void renderNode(Canvas canvas) {
@@ -85,9 +109,8 @@ public class NodeTxt {
                     RIGHT_DOWN_LEFT : RIGHT_LEFT);
         }
 
-        for (int i = 0; i < node.getId().length(); i++) {
-            canvas.getPixel(x + 2 + i, y + 1).setContent(node.getId().charAt(i));
-        }
+        for (int i = 0; i < node.toString().length(); i++)
+            canvas.getPixel(x + 2 + i, y + 1).setContent(node.toString().charAt(i));
     }
 
     public void renderEdge(Canvas canvas, int coast, NodeTxt nodeTxt) {

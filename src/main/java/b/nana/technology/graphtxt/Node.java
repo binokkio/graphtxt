@@ -3,6 +3,6 @@ package b.nana.technology.graphtxt;
 import java.util.List;
 
 public interface Node {
-    String getId();
+    Object getId();
     List<Edge> getEdges();
 }
