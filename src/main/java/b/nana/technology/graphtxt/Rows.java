@@ -47,11 +47,10 @@ public class Rows extends HashMap<Integer, Row> {
                     .forEach(entry -> {
                         NodeTxt node = entry.getKey();
                         Score score = entry.getValue();
-
                         if (score.getScore() <= -1 && node.getX() - 1 >= 0 && row.isXFree(node.getX() - 1)) {
                             node.setX(node.getX() - 1);
                             movement.set(true);
-                        } else if (score.getScore() >= 1 && node.getX() + node.getWidth() + 1 < canvasWidth && row.isXFree(node.getX() + node.getWidth() + 1)) {
+                        } else if (score.getScore() >= 1 && node.getX() + node.getWidth() + 1 <= canvasWidth && row.isXFree(node.getX() + node.getWidth() + 1)) {
                             node.setX(node.getX() + 1);
                             movement.set(true);
                         }

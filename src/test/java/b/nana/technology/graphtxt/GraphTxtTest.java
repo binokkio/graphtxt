@@ -44,7 +44,8 @@ class GraphTxtTest {
                         SimpleNode.of("E"),
                         SimpleNode.of("F"),
                         SimpleNode.of("ZZZ"),
-                        SimpleNode.of("H")
+                        SimpleNode.of("H", "Haha"),
+                        SimpleNode.of("Haha")
                 )
         ).getText());
     }
