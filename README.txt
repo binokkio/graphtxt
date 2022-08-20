@@ -3,38 +3,38 @@ This is a low quality codebase written specifically to render plain text visuali
 Example code:
 
 new GraphTxt(List.of(
-    SimpleNode.of("Aaaaa", "Bbbb", "C", "F"),
-    SimpleNode.of("Bbbb", "F"),
+    SimpleNode.of("AAAAA", "BBBB", "C", "F"),
+    SimpleNode.of("BBBB", "F"),
     SimpleNode.of("C"),
-    SimpleNode.of("D", "Bbbb", "E", "ZZZ", "H"),
+    SimpleNode.of("D", "BBBB", "E", "ZZZ", "H"),
     SimpleNode.of("E"),
     SimpleNode.of("F"),
     SimpleNode.of("ZZZ"),
-    SimpleNode.of("H", "Iiii"),
-    SimpleNode.of("Iiii")
+    SimpleNode.of("H", "IIII"),
+    SimpleNode.of("IIII")
 )).getText()
 
 Will produce:
 
   ┌───────┐       ┌───┐
-  │ Aaaaa │       │ D │
+  │ AAAAA │       │ D │
   └───┬───┘       └─┬─┘
       │             │
   ┌───┴───┐         │
   │       ├──────┬──┴───┬──────┐
   │       │      │      │      │
 ┌─┴─┐ ┌───┴──┐ ┌─┴─┐ ┌──┴──┐ ┌─┴─┐
-│ C │ │ Bbbb │ │ E │ │ ZZZ │ │ H │
+│ C │ │ BBBB │ │ E │ │ ZZZ │ │ H │
 └───┘ └───┬──┘ └───┘ └─────┘ └─┬─┘
           │                    │
           │                    │
           │                   ┌┘
           │                   │
         ┌─┴─┐             ┌───┴──┐
-        │ F │             │ Iiii │
+        │ F │             │ IIII │
         └───┘             └──────┘
 
 The layout algorithm keeps the nodes within the horizontal space used by the widest row.
 
-Edges that skip a row, e.g. Aaaaa-F in the example, currently draw behind other edges and nodes which needs to
+Edges that skip a row, e.g. AAAAA-F in the example, currently draw behind other edges and nodes which needs to
 be improved.

@@ -54,15 +54,15 @@ class GraphTxtTest {
     void testTwoRootsIntertwined() {
         System.out.println(new GraphTxt(
                 List.of(
-                        SimpleNode.of("Aaaaa", "Bbbb", "C", "F"),
-                        SimpleNode.of("Bbbb", "F"),
+                        SimpleNode.of("AAAAA", "BBBB", "C", "F"),
+                        SimpleNode.of("BBBB", "F"),
                         SimpleNode.of("C"),
-                        SimpleNode.of("D", "Bbbb", "E", "ZZZ", "H"),
+                        SimpleNode.of("D", "BBBB", "E", "ZZZ", "H"),
                         SimpleNode.of("E"),
                         SimpleNode.of("F"),
                         SimpleNode.of("ZZZ"),
-                        SimpleNode.of("H", "Iiii"),
-                        SimpleNode.of("Iiii")
+                        SimpleNode.of("H", "IIII"),
+                        SimpleNode.of("IIII")
                 )
         ).getText());
     }
