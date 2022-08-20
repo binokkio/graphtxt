@@ -107,7 +107,9 @@ public class NodeTxt {
         canvas.getPixel(x, y).setContent(RIGHT_DOWN);
         canvas.getPixel(x + getWidth() - 1, y).setContent(DOWN_LEFT);
         canvas.getPixel(x, y + 1).setContent(UP_DOWN);
+        canvas.getPixel(x + 1, y + 1).setContent(' ');
         canvas.getPixel(x + getWidth() - 1, y + 1).setContent(UP_DOWN);
+        canvas.getPixel(x + getWidth() - 2, y + 1).setContent(' ');
         canvas.getPixel(x, y + 2).setContent(UP_RIGHT);
         canvas.getPixel(x + getWidth() - 1, y + 2).setContent(UP_LEFT);
         for (int i = 1; i < getWidth() - 1; i++) {
