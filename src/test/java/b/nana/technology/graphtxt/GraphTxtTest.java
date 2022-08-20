@@ -10,14 +10,31 @@ class GraphTxtTest {
     void testAB() {
         System.out.println(new GraphTxt(
                 List.of(
-                        SimpleNode.of("AAA", "BBBBBBBBBBB"),
-                        SimpleNode.of("BBBBBBBBBBB")
+                        SimpleNode.of("A", "B"),
+                        SimpleNode.of("B")
                 )
         ).getText());
     }
 
     @Test
-    void test() {
+    void testPyramid() {
+        System.out.println(new GraphTxt(
+                List.of(
+                        SimpleNode.of("1", "22"),
+                        SimpleNode.of("22", "333"),
+                        SimpleNode.of("333", "4444"),
+                        SimpleNode.of("4444", "55555"),
+                        SimpleNode.of("55555", "666666"),
+                        SimpleNode.of("666666", "7777777"),
+                        SimpleNode.of("7777777", "88888888"),
+                        SimpleNode.of("88888888", "999999999"),
+                        SimpleNode.of("999999999")
+                )
+        ).getText());
+    }
+
+    @Test
+    void testReversePyramid() {
         System.out.println(new GraphTxt(
                 List.of(
                         SimpleNode.of("999999999", "88888888"),
@@ -37,15 +54,15 @@ class GraphTxtTest {
     void testTwoRootsIntertwined() {
         System.out.println(new GraphTxt(
                 List.of(
-                        SimpleNode.of("Alpha", "Booo", "C", "F"),
-                        SimpleNode.of("Booo", "F"),
+                        SimpleNode.of("Aaaaa", "Bbbb", "C", "F"),
+                        SimpleNode.of("Bbbb", "F"),
                         SimpleNode.of("C"),
-                        SimpleNode.of("D", "Booo", "E", "ZZZ", "H"),
+                        SimpleNode.of("D", "Bbbb", "E", "ZZZ", "H"),
                         SimpleNode.of("E"),
                         SimpleNode.of("F"),
                         SimpleNode.of("ZZZ"),
-                        SimpleNode.of("H", "Haha"),
-                        SimpleNode.of("Haha")
+                        SimpleNode.of("H", "Iiii"),
+                        SimpleNode.of("Iiii")
                 )
         ).getText());
     }
