@@ -91,6 +91,14 @@ public class NodeTxt {
         return y;
     }
 
+    public int getCenterX() {
+        return x + getWidth() / 2;
+    }
+
+    public boolean hitsX(int x) {
+        return x >= this.x && x <= this.x + getWidth();
+    }
+
     public int getWidth() {
         return node.toString().length() + 4;
     }

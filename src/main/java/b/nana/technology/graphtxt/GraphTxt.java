@@ -19,7 +19,7 @@ public class GraphTxt {
         // determine row assignments
         Map<NodeTxt, Integer> rowAssignment = new LinkedHashMap<>();
         roots.forEach(root ->
-            assignRows(root, new ArrayDeque<>(), rowAssignment));
+                assignRows(root, new ArrayDeque<>(), rowAssignment));
 
         // create rows
         Rows rows = new Rows();
@@ -59,7 +59,7 @@ public class GraphTxt {
             rowOffset.addAndGet(5 + (int) nodes.stream().filter(NodeTxt::hasEdges).count());
         });
 
-        // calculate canvas size
+        // initial canvas size
         int width = nodes.stream()
                 .mapToInt(node -> node.getX() + node.getWidth())
                 .max()
@@ -69,6 +69,9 @@ public class GraphTxt {
                 .mapToInt(node -> node.getY() + 3)
                 .max()
                 .orElseThrow();
+
+        // improve placement
+        rows.optimize();
 
         Canvas canvas = new Canvas(width, height);
 

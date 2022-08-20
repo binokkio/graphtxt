@@ -9,8 +9,17 @@ public class Score implements Comparable<Score> {
         score = (score * weight + value) / ++weight;
     }
 
+    public void update(Score score) {
+        this.score = (this.score * weight + score.score * score.weight) / (weight + score.weight);
+        this.weight = weight + score.weight;
+    }
+
     @Override
     public int compareTo(Score other) {
         return Double.compare(score, other.score);
+    }
+
+    public double getScore() {
+        return score;
     }
 }
