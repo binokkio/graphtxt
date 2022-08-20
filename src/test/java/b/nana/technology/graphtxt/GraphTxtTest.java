@@ -10,8 +10,8 @@ class GraphTxtTest {
     void testAB() {
         System.out.println(new GraphTxt(
                 List.of(
-                        SimpleNode.of("A", "B"),
-                        SimpleNode.of("B")
+                        SimpleNode.of("AAA", "BBBBBBBBBBB"),
+                        SimpleNode.of("BBBBBBBBBBB")
                 )
         ).getText());
     }

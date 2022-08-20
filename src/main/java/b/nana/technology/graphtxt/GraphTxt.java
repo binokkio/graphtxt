@@ -71,7 +71,7 @@ public class GraphTxt {
                 .orElseThrow();
 
         // improve placement
-        rows.optimize();
+        rows.optimize(width);
 
         Canvas canvas = new Canvas(width, height);
 

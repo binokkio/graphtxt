@@ -7,17 +7,18 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 public class Rows extends HashMap<Integer, Row> {
 
-    public void optimize() {
+    public void optimize(int canvasWidth) {
+        while (optimizeStep(canvasWidth));
+    }
 
-        for (int i = 0; i < 499; i++) {
+    public boolean optimizeStep(int canvasWidth) {
+        AtomicBoolean movement = new AtomicBoolean();
 
-            int rowIndex = i % size();
-            int rowAboveIndex = rowIndex - 1;
-            int rowBelowIndex = rowIndex + 1;
+        for (int rowIndex = 0; rowIndex < size(); rowIndex++) {
 
             Row row = get(rowIndex);
-            Row rowAbove = get(rowAboveIndex);
-            Row rowBelow = get(rowBelowIndex);
+            Row rowAbove = get(rowIndex - 1);
+            Row rowBelow = get(rowIndex + 1);
 
             Map<NodeTxt, Score> scores = new HashMap<>();
             for (NodeTxt nodeTxt : row) {
@@ -40,23 +41,23 @@ public class Rows extends HashMap<Integer, Row> {
                 }
             }
 
-            AtomicBoolean movement = new AtomicBoolean();
-
             scores.entrySet().stream()
                     .sorted(Comparator.comparingDouble(e -> -Math.abs(e.getValue().getScore())))
                     .forEach(entry -> {
                         NodeTxt node = entry.getKey();
                         Score score = entry.getValue();
 
-                        if (score.getScore() <= -1 && row.isXFree(node.getX() - 1)) {
+                        if (score.getScore() <= -1 && node.getX() - 1 >= 0 && row.isXFree(node.getX() - 1)) {
                             node.setX(node.getX() - 1);
                             movement.set(true);
-                        } else if (score.getScore() >= -1 && row.isXFree(node.getX() + node.getWidth() + 1)) {
+                        } else if (score.getScore() >= 1 && node.getX() + node.getWidth() + 1 < canvasWidth && row.isXFree(node.getX() + node.getWidth() + 1)) {
                             node.setX(node.getX() + 1);
                             movement.set(true);
                         }
                     });
         }
+
+        return movement.get();
     }
 
     private Score getAdjacentRowPull(NodeTxt node, Row rowAbove, Row rowBelow) {
