@@ -8,10 +8,11 @@ import java.util.concurrent.atomic.AtomicBoolean;
 public class Rows extends HashMap<Integer, Row> {
 
     public void optimize(int canvasWidth) {
-        while (optimizeStep(canvasWidth));
+        while (optimizeStep(canvasWidth, false));
+        while (optimizeStep(canvasWidth, true));
     }
 
-    public boolean optimizeStep(int canvasWidth) {
+    public boolean optimizeStep(int canvasWidth, boolean belowHasPull) {
         AtomicBoolean movement = new AtomicBoolean();
 
         for (int rowIndex = 0; rowIndex < size(); rowIndex++) {
@@ -22,7 +23,7 @@ public class Rows extends HashMap<Integer, Row> {
 
             Map<NodeTxt, Score> scores = new HashMap<>();
             for (NodeTxt nodeTxt : row) {
-                scores.put(nodeTxt, getAdjacentRowPull(nodeTxt, rowAbove, rowBelow));
+                scores.put(nodeTxt, getAdjacentRowPull(nodeTxt, rowAbove, rowBelow, belowHasPull));
             }
 
             for (int nodeIndex = 0; nodeIndex < row.size(); nodeIndex++) {
@@ -60,7 +61,7 @@ public class Rows extends HashMap<Integer, Row> {
         return movement.get();
     }
 
-    private Score getAdjacentRowPull(NodeTxt node, Row rowAbove, Row rowBelow) {
+    private Score getAdjacentRowPull(NodeTxt node, Row rowAbove, Row rowBelow, boolean belowHasPull) {
 
         Score score = new Score();
 
@@ -74,7 +75,7 @@ public class Rows extends HashMap<Integer, Row> {
             }
         }
 
-        if (rowBelow != null) {
+        if (belowHasPull && rowBelow != null) {
             for (NodeTxt other : rowBelow) {
                 if (node.linksTo(other)) {
                     score.update(other.getCenterX() - nodeCenterX);
