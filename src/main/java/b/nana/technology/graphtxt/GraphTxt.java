@@ -1,7 +1,6 @@
 package b.nana.technology.graphtxt;
 
 import java.util.*;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 public class GraphTxt {
@@ -47,16 +46,14 @@ public class GraphTxt {
         }
 
         // initial placement
-        AtomicInteger rowOffset = new AtomicInteger();
         Map<Integer, List<NodeTxt>> nodeTxtsByRow = new HashMap<>();
         rows.forEach((row, nodes) -> {
             int columnOffset = 0;
             for (NodeTxt node : nodes) {
                 nodeTxtsByRow.computeIfAbsent(row, x -> new ArrayList<>()).add(node);
-                node.setPosition(columnOffset, rowOffset.get());
+                node.setX(columnOffset);
                 columnOffset += node.getWidth() + 1;
             }
-            rowOffset.addAndGet(5 + (int) nodes.stream().filter(NodeTxt::hasEdges).count());
         });
 
         // initial canvas size
@@ -65,23 +62,46 @@ public class GraphTxt {
                 .max()
                 .orElseThrow();
 
+        // improve placement
+        rows.optimize(width);
+
+        int rowOffset = 0;
+        for (int i = 0; i < rows.size(); i++) {
+            int rowHeight = 0;
+            for (NodeTxt node : rows.get(i)) {
+                node.setY(rowOffset);
+                for (Edge edge : node.getEdges()) {
+                    NodeTxt to = nodes.get(edge.getTo());
+                    // TODO check rowAssignment.get(to) != i + 1 first
+                    if (node.getCenterX() != to.getCenterX()) {
+                        rowHeight++;
+                        break;
+                    }
+                }
+            }
+            rowOffset += 3 + rowHeight;
+        }
+
         int height = nodes.stream()
                 .mapToInt(node -> node.getY() + 3)
                 .max()
                 .orElseThrow();
 
-        // improve placement
-        rows.optimize(width);
-
         Canvas canvas = new Canvas(width, height);
 
         nodeTxtsByRow.forEach((row, nodeTxts) -> {
-            int coast = 1;
+            int coast = 0;
             for (NodeTxt nodeTxt : nodeTxts) {
                 if (!nodeTxt.getNode().getEdges().isEmpty()) {
-                    for (Edge edge : nodeTxt.getNode().getEdges())
-                        nodeTxt.renderEdge(canvas, coast, nodes.get(edge.getTo()));
-                    coast++;
+                    boolean incrementCoast = false;
+                    for (Edge edge : nodeTxt.getNode().getEdges()) {
+                        NodeTxt to = nodes.get(edge.getTo());
+                        nodeTxt.renderEdge(canvas, coast, to);
+                        if (nodeTxt.getCenterX() != to.getCenterX())
+                            incrementCoast = true;
+                    }
+                    if (incrementCoast)
+                        coast++;
                 }
             }
         });
