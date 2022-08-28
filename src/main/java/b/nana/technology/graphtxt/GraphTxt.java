@@ -14,6 +14,7 @@ public class GraphTxt {
 
         Roots roots = new Roots(nodes);
         Rows rows = new Rows(nodes, roots);
+        GoArounds goArounds = new GoArounds(nodes, rows);
         Canvas canvas = new Canvas(rows.getWidth(), rows.getHeight());
 
         for (Row row : rows) {

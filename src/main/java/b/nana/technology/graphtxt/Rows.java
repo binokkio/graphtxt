@@ -50,6 +50,23 @@ public class Rows implements Iterable<Row> {
         optimize(maxRowWidth);
     }
 
+    @Override
+    public Iterator<Row> iterator() {
+        return rows.iterator();
+    }
+
+    public int size() {
+        return rows.size();
+    }
+
+    public Row get(int index) {
+        return rows.get(index);
+    }
+
+    public int getRowIndex(NodeTxt node) {
+        return rowAssignments.get(node);
+    }
+
     public int getWidth() {
         int maxRowWidth = 0;
         for (Row row : rows) {
@@ -60,11 +77,6 @@ public class Rows implements Iterable<Row> {
 
     public int getHeight() {
         return rows.get(rows.size() - 1).get(0).getY() + 3;
-    }
-
-    @Override
-    public Iterator<Row> iterator() {
-        return rows.iterator();
     }
 
     private void put(int index, NodeTxt node) {
