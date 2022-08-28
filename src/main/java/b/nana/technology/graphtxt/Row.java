@@ -4,6 +4,17 @@ import java.util.ArrayList;
 
 public class Row extends ArrayList<NodeTxt> {
 
+    int height = 3;
+    int incomingGoAroundOffset = 1;
+
+    public void incrementHeight() {
+        height++;
+    }
+
+    public int claimIncomingGoAroundOffset() {
+        return incomingGoAroundOffset++;
+    }
+
     public int getWidth() {
         NodeTxt last = get(size() - 1);
         return last.getX() + last.getWidth();

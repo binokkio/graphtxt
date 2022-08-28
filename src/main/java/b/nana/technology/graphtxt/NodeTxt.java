@@ -145,8 +145,19 @@ public class NodeTxt {
             addEdgeSegment(canvas.getPixel(x, y++), UP_DOWN_MASK);
 
         addEdgeSegment(canvas.getPixel(x, y), UP_LEFT_MASK);
-        while (x > goAround.x)
+        while (x > goAround.x + 1)
             addEdgeSegment(canvas.getPixel(--x, y), RIGHT_LEFT_MASK);
+
+        addEdgeSegment(canvas.getPixel(--x, y), RIGHT_DOWN_MASK);
+        while (y < to.y - goAround.incomingGoAroundOffset - 1)
+            addEdgeSegment(canvas.getPixel(x, ++y), UP_DOWN_MASK);
+
+        addEdgeSegment(canvas.getPixel(x, ++y), UP_RIGHT_MASK);
+        while (x < to.x + to.getWidth() / 2 - 1)
+            addEdgeSegment(canvas.getPixel(++x, y), RIGHT_LEFT_MASK);
+
+        addEdgeSegment(canvas.getPixel(++x, y), DOWN_LEFT_MASK);
+
     }
 
     private void addEdgeSegment(Pixel pixel, int edgeSegmentMask) {

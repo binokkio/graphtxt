@@ -68,13 +68,26 @@ class GraphTxtTest {
     }
 
     @Test
-    void testGoArounds() {
+    void testGoArounds1() {
         System.out.println(new GraphTxt(
                 List.of(
                         SimpleNode.of("A", "B", "D"),
                         SimpleNode.of("B", "C", "D"),
                         SimpleNode.of("C", "D"),
                         SimpleNode.of("D")
+                )
+        ).getText());
+    }
+
+    @Test
+    void testGoArounds2() {
+        System.out.println(new GraphTxt(
+                List.of(
+                        SimpleNode.of("A", "B", "D", "E"),
+                        SimpleNode.of("B", "C", "D"),
+                        SimpleNode.of("C", "D"),
+                        SimpleNode.of("D", "E"),
+                        SimpleNode.of("E")
                 )
         ).getText());
     }

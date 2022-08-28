@@ -40,14 +40,9 @@ public class Rows implements Iterable<Row> {
         }
 
         // initial placement
-        int maxRowWidth = 0;
         for (Row row : rows) {
             row.placeNodesSideBySide();
-            maxRowWidth = Math.max(maxRowWidth, row.getWidth());
         }
-
-        // optimize placement
-        optimize(maxRowWidth);
     }
 
     @Override
@@ -90,12 +85,7 @@ public class Rows implements Iterable<Row> {
         rows.get(index).add(node);
     }
 
-    private void optimize(int canvasWidth) {
-        optimizeX(canvasWidth);
-        optimizeY();
-    }
-
-    private void optimizeX(int canvasWidth) {
+    public void optimizeX(int canvasWidth) {
         while (optimizeXStep(canvasWidth, true, false));
         while (optimizeXStep(canvasWidth, false, true));
         while (optimizeXStep(canvasWidth, true, true));
@@ -174,23 +164,32 @@ public class Rows implements Iterable<Row> {
         return score;
     }
 
-    private void optimizeY() {
-        int rowOffset = 0;
-        for (int i = 0; i < rows.size(); i++) {
-            int rowHeight = 0;
-            for (NodeTxt node : rows.get(i)) {
-                node.setY(rowOffset);
-                for (Edge edge : node.getEdges()) {
-                    NodeTxt to = nodes.get(edge.getTo());
-                    if (getRowIndex(to) != i + 1) {
+    public void optimizeY(GoArounds goArounds) {
 
-                    } else if (node.getCenterX() != to.getCenterX()) {
-                        rowHeight++;
-                        break;
+        for (int i = 0; i < rows.size(); i++) {
+            for (NodeTxt node : rows.get(i)) {
+                if (goArounds.isAtStartOfGoAround(node)) {
+                    rows.get(i).incrementHeight();
+                } else {
+                    for (Edge edge : node.getEdges()) {
+                        NodeTxt to = nodes.get(edge.getTo());
+                        if (node.getCenterX() != to.getCenterX()) {
+                            rows.get(i).incrementHeight();
+                            break;
+                        }
                     }
                 }
+                if (i > 0 && goArounds.isAtEndOfGoAround(node)) {
+                    rows.get(i - 1).incrementHeight();
+                }
             }
-            rowOffset += 3 + rowHeight;
+        }
+
+        int rowOffset = 0;
+        for (Row row : rows) {
+            for (NodeTxt node : row)
+                node.setY(rowOffset);
+            rowOffset += row.height;
         }
     }
 
