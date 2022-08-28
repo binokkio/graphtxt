@@ -33,7 +33,7 @@ public class GoArounds {
     }
 
     public int getWidth() {
-        return goArounds.size() + 1;
+        return goArounds.isEmpty() ? 0 : goArounds.size() + 1;
     }
 
     public GoAround get(NodeTxt to) {
