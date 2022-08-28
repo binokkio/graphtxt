@@ -41,15 +41,13 @@ public class NodeTxt {
     private static final char UP_RIGHT_LEFT = EDGE_SEGMENTS[UP_RIGHT_LEFT_MASK];
 
 
-    private final GraphTxt graphTxt;
     private final Node node;
     private final Edges edges;
 
     private int x;
     private int y;
 
-    public NodeTxt(GraphTxt graphTxt, Node node) {
-        this.graphTxt = graphTxt;
+    public NodeTxt(Node node) {
         this.node = node;
         this.edges = new Edges(node.getEdges());
     }
@@ -62,17 +60,8 @@ public class NodeTxt {
         return edges;
     }
 
-    public boolean hasEdges() {
-        return !edges.isEmpty();
-    }
-
     public boolean linksTo(NodeTxt root) {
         return edges.linksTo(root);
-    }
-
-    public void setPosition(int x, int y) {
-        this.x = x;
-        this.y = y;
     }
 
     public void setX(int x) {

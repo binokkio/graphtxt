@@ -1,28 +1,31 @@
 package b.nana.technology.graphtxt;
 
 import java.util.Collection;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
-public class Nodes {
+public class Nodes implements Iterable<NodeTxt> {
 
-    private final GraphTxt graphTxt;
     private final Map<Object, NodeTxt> nodes;
 
-    public Nodes(GraphTxt graphTxt, Collection<Node> nodes) {
+    public Nodes(Collection<Node> nodes) {
         if (nodes.isEmpty()) throw new IllegalArgumentException("empty nodes");
-        this.graphTxt = graphTxt;
         this.nodes = nodes.stream().collect(Collectors.toMap(
                 Node::getId,
-                node -> new NodeTxt(graphTxt, node),
+                NodeTxt::new,
                 (a, b) -> a,
                 LinkedHashMap::new));
     }
 
     public NodeTxt get(Object id) {
         return nodes.get(id);
+    }
+
+    @Override
+    public Iterator<NodeTxt> iterator() {
+        return nodes.values().iterator();
     }
 
     Integer getIndex(NodeTxt node) {
@@ -36,9 +39,5 @@ public class Nodes {
 
     public Collection<NodeTxt> values() {
         return nodes.values();
-    }
-
-    public Stream<NodeTxt> stream() {
-        return values().stream();
     }
 }
