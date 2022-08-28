@@ -137,6 +137,18 @@ public class NodeTxt {
             addEdgeSegment(canvas.getPixel(x, ++y), UP_DOWN_MASK);
     }
 
+    public void renderEdge(Canvas canvas, int coast, GoAround goAround, NodeTxt to) {
+        int x = this.x + (getWidth() / 2);
+        int y = this.y + 3;
+
+        for (int i = 0; i < coast; i++)
+            addEdgeSegment(canvas.getPixel(x, y++), UP_DOWN_MASK);
+
+        addEdgeSegment(canvas.getPixel(x, y), UP_LEFT_MASK);
+        while (x > goAround.x)
+            addEdgeSegment(canvas.getPixel(--x, y), RIGHT_LEFT_MASK);
+    }
+
     private void addEdgeSegment(Pixel pixel, int edgeSegmentMask) {
         pixel.setContent(EDGE_SEGMENTS[getEdgeSegmentMask(pixel.getContent()) | edgeSegmentMask]);
     }
@@ -146,5 +158,9 @@ public class NodeTxt {
             if (EDGE_SEGMENTS[i] == c)
                 return i;
         return 0;
+    }
+
+    public void translateX(int delta) {
+        this.x += delta;
     }
 }

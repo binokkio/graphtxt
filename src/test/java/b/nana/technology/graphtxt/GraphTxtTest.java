@@ -66,4 +66,16 @@ class GraphTxtTest {
                 )
         ).getText());
     }
+
+    @Test
+    void testGoArounds() {
+        System.out.println(new GraphTxt(
+                List.of(
+                        SimpleNode.of("A", "B", "D"),
+                        SimpleNode.of("B", "C", "D"),
+                        SimpleNode.of("C", "D"),
+                        SimpleNode.of("D")
+                )
+        ).getText());
+    }
 }

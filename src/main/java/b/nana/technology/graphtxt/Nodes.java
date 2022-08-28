@@ -40,4 +40,8 @@ public class Nodes implements Iterable<NodeTxt> {
     public Collection<NodeTxt> values() {
         return nodes.values();
     }
+
+    public void translateX(int delta) {
+        nodes.values().forEach(node -> node.translateX(delta));
+    }
 }

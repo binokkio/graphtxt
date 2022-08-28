@@ -182,8 +182,9 @@ public class Rows implements Iterable<Row> {
                 node.setY(rowOffset);
                 for (Edge edge : node.getEdges()) {
                     NodeTxt to = nodes.get(edge.getTo());
-                    // TODO check rowAssignment.get(to) != i + 1 first
-                    if (node.getCenterX() != to.getCenterX()) {
+                    if (getRowIndex(to) != i + 1) {
+
+                    } else if (node.getCenterX() != to.getCenterX()) {
                         rowHeight++;
                         break;
                     }
