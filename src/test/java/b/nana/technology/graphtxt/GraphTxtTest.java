@@ -85,7 +85,7 @@ class GraphTxtTest {
                 List.of(
                         SimpleNode.of("A", "B", "D", "E"),
                         SimpleNode.of("B", "C", "D"),
-                        SimpleNode.of("C", "D"),
+                        SimpleNode.of("C", "D", "E"),
                         SimpleNode.of("D", "E"),
                         SimpleNode.of("E")
                 )

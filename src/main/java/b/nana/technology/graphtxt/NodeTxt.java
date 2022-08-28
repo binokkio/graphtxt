@@ -46,6 +46,7 @@ public class NodeTxt {
 
     private int x;
     private int y;
+    private int incomingGoAroundOffset = -1;
 
     public NodeTxt(Node node) {
         this.node = node;
@@ -96,9 +97,7 @@ public class NodeTxt {
         canvas.getPixel(x, y).setContent(RIGHT_DOWN);
         canvas.getPixel(x + getWidth() - 1, y).setContent(DOWN_LEFT);
         canvas.getPixel(x, y + 1).setContent(UP_DOWN);
-        canvas.getPixel(x + 1, y + 1).setContent(' ');
         canvas.getPixel(x + getWidth() - 1, y + 1).setContent(UP_DOWN);
-        canvas.getPixel(x + getWidth() - 2, y + 1).setContent(' ');
         canvas.getPixel(x, y + 2).setContent(UP_RIGHT);
         canvas.getPixel(x + getWidth() - 1, y + 2).setContent(UP_LEFT);
         for (int i = 1; i < getWidth() - 1; i++) {
@@ -137,7 +136,7 @@ public class NodeTxt {
             addEdgeSegment(canvas.getPixel(x, ++y), UP_DOWN_MASK);
     }
 
-    public void renderEdge(Canvas canvas, int coast, GoAround goAround, NodeTxt to) {
+    public void renderEdge(Canvas canvas, int coast, GoAround goAround, NodeTxt to, Row toRow) {
         int x = this.x + (getWidth() / 2);
         int y = this.y + 3;
 
@@ -149,7 +148,7 @@ public class NodeTxt {
             addEdgeSegment(canvas.getPixel(--x, y), RIGHT_LEFT_MASK);
 
         addEdgeSegment(canvas.getPixel(--x, y), RIGHT_DOWN_MASK);
-        while (y < to.y - goAround.incomingGoAroundOffset - 1)
+        while (y < to.y - to.getIncomingGoAroundOffset(toRow) - 1)
             addEdgeSegment(canvas.getPixel(x, ++y), UP_DOWN_MASK);
 
         addEdgeSegment(canvas.getPixel(x, ++y), UP_RIGHT_MASK);
@@ -158,6 +157,13 @@ public class NodeTxt {
 
         addEdgeSegment(canvas.getPixel(++x, y), DOWN_LEFT_MASK);
 
+    }
+
+    private int getIncomingGoAroundOffset(Row toRow) {
+        if (incomingGoAroundOffset == -1) {
+            incomingGoAroundOffset = toRow.claimIncomingGoAroundOffset();
+        }
+        return incomingGoAroundOffset;
     }
 
     private void addEdgeSegment(Pixel pixel, int edgeSegmentMask) {

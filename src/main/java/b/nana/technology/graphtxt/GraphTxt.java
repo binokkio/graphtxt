@@ -29,7 +29,7 @@ public class GraphTxt {
                     for (Edge edge : node.getNode().getEdges()) {
                         NodeTxt to = nodes.get(edge.getTo());
                         if (rows.getRowIndex(node) + 1 != rows.getRowIndex(to)) {
-                            node.renderEdge(canvas, coast, goArounds.get(to), to);
+                            node.renderEdge(canvas, coast, goArounds.get(node), to, rows.get(rows.getRowIndex(to)));
                             incrementCoast = true;
                         } else {
                             node.renderEdge(canvas, coast, to);

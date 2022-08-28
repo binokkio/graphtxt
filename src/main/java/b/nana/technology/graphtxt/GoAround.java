@@ -5,28 +5,24 @@ import java.util.Set;
 
 public class GoAround {
 
-    private final NodeTxt to;
-    private final Set<NodeTxt> from = new HashSet<>();
+    private final NodeTxt from;
+    private final Set<NodeTxt> to = new HashSet<>();
     final int x;
-    private final int height;
-    final int incomingGoAroundOffset;
 
-    public GoAround(Row row, NodeTxt to, int x, int height) {
-        this.to = to;
+    public GoAround(NodeTxt from, int x) {
+        this.from = from;
         this.x = x;
-        this.height = height;
-        this.incomingGoAroundOffset = row.claimIncomingGoAroundOffset();
     }
 
-    public NodeTxt getTo() {
-        return to;
-    }
-
-    public Set<NodeTxt> getFrom() {
+    public NodeTxt getFrom() {
         return from;
     }
 
-    public void addFrom(NodeTxt from) {
-        this.from.add(from);
+    public Set<NodeTxt> getTo() {
+        return to;
+    }
+
+    public void addTo(NodeTxt to) {
+        this.to.add(to);
     }
 }

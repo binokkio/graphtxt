@@ -18,12 +18,12 @@ public class GoArounds {
                     int toRowIndex = rows.getRowIndex(to);
                     int rowDistance = toRowIndex - fromRowIndex;
                     if (rowDistance > 1) {
-                        GoAround goAround = goArounds.get(to);
+                        GoAround goAround = goArounds.get(from);
                         if (goAround == null) {
-                            goAround = new GoAround(rows.get(toRowIndex), to, x++, rowDistance);
-                            goArounds.put(to, goAround);
+                            goAround = new GoAround(from, x++);
+                            goArounds.put(from, goAround);
                         }
-                        goAround.addFrom(from);
+                        goAround.addTo(to);
                     }
                 }
             }
@@ -41,10 +41,10 @@ public class GoArounds {
     }
 
     public boolean isAtStartOfGoAround(NodeTxt node) {
-        return goArounds.values().stream().anyMatch(goAround -> goAround.getFrom().contains(node));
+        return goArounds.containsKey(node);
     }
 
     public boolean isAtEndOfGoAround(NodeTxt node) {
-        return goArounds.containsKey(node);
+        return goArounds.values().stream().anyMatch(goAround -> goAround.getTo().contains(node));
     }
 }

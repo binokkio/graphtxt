@@ -1,4 +1,4 @@
-This is a low quality codebase written specifically to render plain text visualizations of flows in Gingester.
+This is a pathfinder codebase written specifically to render plain text visualizations of flows in Gingester.
 
 Example code:
 
@@ -16,20 +16,18 @@ new GraphTxt(List.of(
 
 Will produce:
 
-  ┌───────┐       ┌───┐
-  │ AAAAA │       │ D │
-  └───┬───┘       └─┬─┘
-  ┌───┴───┐         │
-  │       ├──────┬──┴───┬──────┐
-┌─┴─┐ ┌───┴──┐ ┌─┴─┐ ┌──┴──┐ ┌─┴─┐
-│ C │ │ BBBB │ │ E │ │ ZZZ │ │ H │
-└───┘ └───┬──┘ └───┘ └─────┘ └─┬─┘
-          │                   ┌┘
-        ┌─┴─┐             ┌───┴──┐
-        │ F │             │ IIII │
-        └───┘             └──────┘
+    ┌───────┐       ┌───┐
+    │ AAAAA │       │ D │
+    └───┬───┘       └─┬─┘
+┌───┬───┴───┐         │
+│   │       ├──────┬──┴───┬──────┐
+│ ┌─┴─┐ ┌───┴──┐ ┌─┴─┐ ┌──┴──┐ ┌─┴─┐
+│ │ C │ │ BBBB │ │ E │ │ ZZZ │ │ H │
+│ └───┘ └───┬──┘ └───┘ └─────┘ └─┬─┘
+│           │                   ┌┘
+└───────────┤                   │
+          ┌─┴─┐             ┌───┴──┐
+          │ F │             │ IIII │
+          └───┘             └──────┘
 
 The layout algorithm keeps the nodes within the horizontal space used by the widest row.
-
-Edges that skip a row, e.g. AAAAA-F in the example, currently draw behind other edges and nodes which needs to
-be improved.
